@@ -3,23 +3,41 @@
 @tailwind utilities;
 
 /* ========================================
-   متغيرات الألوان والتصميم
+   متغيرات الألوان - التصميم الحكومي
+   Government Color Scheme
    ======================================== */
 :root {
-  --primary-purple: #7c3aed;
-  --secondary-purple: #9333ea;
-  --dark-purple: #4b0082;
-  --deep-purple: #2b006e;
-  --darkest-purple: #1a1a40;
-  --accent-pink: #f093fb;
-  --accent-blue: #667eea;
-  --glass-bg: rgba(255, 255, 255, 0.1);
-  --glass-border: rgba(255, 255, 255, 0.2);
-  --card-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  /* ألوان رئيسية - Primary Colors */
+  --gov-blue-dark: #1e40af;      /* أزرق غامق حكومي */
+  --gov-blue: #3b82f6;           /* أزرق حكومي رئيسي */
+  --gov-blue-light: #60a5fa;     /* أزرق فاتح */
+  --gov-blue-lighter: #93c5fd;   /* أزرق فاتح جداً */
+  
+  /* ألوان ثانوية - Secondary Colors */
+  --gov-gold: #fbbf24;           /* ذهبي للعناصر المهمة */
+  --gov-gold-dark: #f59e0b;      /* ذهبي غامق */
+  --gov-green: #10b981;          /* أخضر للنجاح */
+  --gov-red: #ef4444;            /* أحمر للتنبيه */
+  
+  /* ألوان الخلفية - Background Colors */
+  --bg-main: #f8fafc;            /* خلفية رئيسية فاتحة */
+  --bg-secondary: #f1f5f9;       /* خلفية ثانوية */
+  --bg-white: #ffffff;           /* أبيض نقي */
+  
+  /* ألوان النصوص - Text Colors */
+  --text-primary: #1e293b;       /* نص رئيسي غامق */
+  --text-secondary: #475569;     /* نص ثانوي */
+  --text-light: #64748b;         /* نص فاتح */
+  
+  /* Glass Effect - تأثير الزجاج الحكومي */
+  --glass-bg: rgba(255, 255, 255, 0.9);
+  --glass-border: rgba(30, 64, 175, 0.2);
+  --card-shadow: 0 4px 20px 0 rgba(30, 64, 175, 0.15);
 }
 
 /* ========================================
    إعادة تعيين أساسية
+   Basic Reset
    ======================================== */
 * {
   margin: 0;
@@ -29,20 +47,21 @@
 
 /* ========================================
    تصميم Body والخلفية
+   Body & Background Styling
    ======================================== */
 body {
   font-family: 'Tajawal', 'Cairo', sans-serif;
   direction: rtl;
   text-align: right;
-  background: linear-gradient(135deg, #4b0082, #2b006e, #1a1a40);
-  color: white;
+  background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 50%, #f8fafc 100%);
+  color: var(--text-primary);
   min-height: 100vh;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* خلفية متحركة */
+/* خلفية حكومية احترافية - Professional Government Background */
 body::before {
   content: '';
   position: fixed;
@@ -50,115 +69,174 @@ body::before {
   left: 0;
   width: 100%;
   height: 100%;
-  background: 
-    radial-gradient(circle at 20% 50%, rgba(124, 58, 237, 0.2) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(147, 51, 234, 0.2) 0%, transparent 50%),
-    radial-gradient(circle at 40% 20%, rgba(240, 147, 251, 0.1) 0%, transparent 40%);
-  animation: backgroundShift 15s ease-in-out infinite;
+  background-image: 
+    linear-gradient(0deg, rgba(30, 64, 175, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(30, 64, 175, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.5;
+}
+
+/* شعار مائي حكومي - Government Watermark (optional) */
+body::after {
+  content: '';
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(30, 64, 175, 0.05) 0%, transparent 70%);
+  border-radius: 50%;
   pointer-events: none;
   z-index: -1;
 }
 
-@keyframes backgroundShift {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.7; }
-}
-
 /* ========================================
-   تصميم Scrollbar مخصص
+   تصميم Scrollbar - حكومي نظيف
+   Clean Government Scrollbar
    ======================================== */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 12px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-secondary);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, var(--primary-purple), var(--secondary-purple));
-  border-radius: 10px;
+  background: linear-gradient(180deg, var(--gov-blue), var(--gov-blue-dark));
+  border-radius: 6px;
+  border: 2px solid var(--bg-secondary);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, var(--secondary-purple), var(--accent-pink));
+  background: var(--gov-blue-dark);
 }
 
 /* ========================================
    Tailwind Utilities مخصصة
+   Custom Tailwind Utilities
    ======================================== */
 @layer utilities {
-  /* خلفية Gradient */
-  .gradient-bg {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  /* خلفية حكومية - Government Background */
+  .gov-gradient-bg {
+    background: linear-gradient(135deg, var(--gov-blue-dark) 0%, var(--gov-blue) 100%);
   }
 
-  .gradient-bg-reverse {
-    background: linear-gradient(135deg, #f093fb 0%, #764ba2 50%, #667eea 100%);
+  .gov-gradient-light {
+    background: linear-gradient(135deg, #ffffff 0%, #e0f2fe 100%);
   }
 
-  /* تأثير Glass Morphism */
+  /* تأثير Glass Morphism - حكومي احترافي */
   .card-glass {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--glass-bg);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid var(--glass-border);
     box-shadow: var(--card-shadow);
     transition: all 0.3s ease;
   }
 
   .card-glass:hover {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.3);
-    transform: translateY(-5px);
-    box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.5);
+    background: rgba(255, 255, 255, 0.95);
+    border-color: var(--gov-blue-light);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px 0 rgba(30, 64, 175, 0.25);
   }
 
-  /* تأثير Glass أقوى */
+  /* كرت حكومي رسمي - Official Government Card */
+  .card-official {
+    background: white;
+    border: 2px solid var(--gov-blue-light);
+    border-right: 4px solid var(--gov-blue);
+    box-shadow: 0 2px 10px rgba(30, 64, 175, 0.1);
+    transition: all 0.3s ease;
+  }
+
+  .card-official:hover {
+    border-right-width: 6px;
+    box-shadow: 0 4px 20px rgba(30, 64, 175, 0.2);
+  }
+
+  /* Glass أقوى - Stronger Glass */
   .glass-strong {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.92);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.25);
+    border: 2px solid var(--glass-border);
   }
 
-  /* نص بـ Gradient */
-  .text-gradient {
-    background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+  /* نص بـ Gradient حكومي - Government Gradient Text */
+  .text-gradient-gov {
+    background: linear-gradient(135deg, var(--gov-blue-dark), var(--gov-blue), var(--gov-gold));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
-  /* ظل نص متوهج */
-  .text-glow {
-    text-shadow: 0 0 20px rgba(124, 58, 237, 0.8),
-                 0 0 40px rgba(147, 51, 234, 0.6);
+  /* عناوين رسمية - Official Headings */
+  .heading-official {
+    color: var(--gov-blue-dark);
+    font-weight: 800;
+    letter-spacing: -0.5px;
   }
 
-  /* حركة Fade In */
+  /* شارة حكومية - Government Badge */
+  .badge-gov {
+    background: linear-gradient(135deg, var(--gov-blue), var(--gov-blue-light));
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(30, 64, 175, 0.3);
+  }
+
+  /* شارة ذهبية - Gold Badge */
+  .badge-gold {
+    background: linear-gradient(135deg, var(--gov-gold-dark), var(--gov-gold));
+    color: white;
+  }
+
+  /* حركات الدخول - Entrance Animations */
   .fade-in {
     animation: fadeIn 0.6s ease-in-out;
   }
 
-  /* حركة Slide Up */
   .slide-up {
     animation: slideUp 0.8s ease-out;
   }
 
-  /* حركة Scale In */
   .scale-in {
     animation: scaleIn 0.5s ease-out;
   }
 
-  /* حركة Float */
-  .float {
-    animation: float 3s ease-in-out infinite;
+  .slide-in-right {
+    animation: slideInRight 0.7s ease-out;
   }
 
-  /* تأثير Pulse للأزرار */
-  .pulse-button {
-    animation: pulseButton 2s ease-in-out infinite;
+  .slide-in-left {
+    animation: slideInLeft 0.7s ease-out;
+  }
+
+  /* تأثير رسمي للأزرار - Official Button Effect */
+  .btn-official {
+    background: var(--gov-blue);
+    color: white;
+    border: 2px solid var(--gov-blue-dark);
+    transition: all 0.3s ease;
+  }
+
+  .btn-official:hover {
+    background: var(--gov-blue-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(30, 64, 175, 0.4);
+  }
+
+  .btn-official:active {
+    transform: translateY(0);
   }
 }
 
@@ -188,7 +266,7 @@ body::before {
 @keyframes scaleIn {
   from {
     opacity: 0;
-    transform: scale(0.9);
+    transform: scale(0.95);
   }
   to {
     opacity: 1;
@@ -196,25 +274,6 @@ body::before {
   }
 }
 
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-@keyframes pulseButton {
-  0%, 100% {
-    box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.7);
-  }
-  50% {
-    box-shadow: 0 0 0 15px rgba(124, 58, 237, 0);
-  }
-}
-
-/* حركة للعناصر الداخلة من اليسار */
 @keyframes slideInRight {
   from {
     opacity: 0;
@@ -226,7 +285,6 @@ body::before {
   }
 }
 
-/* حركة للعناصر الداخلة من اليمين */
 @keyframes slideInLeft {
   from {
     opacity: 0;
@@ -238,19 +296,58 @@ body::before {
   }
 }
 
+/* حركة نبض هادئة - Subtle Pulse */
+@keyframes pulseSubtle {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(30, 64, 175, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(30, 64, 175, 0);
+  }
+}
+
 /* ========================================
    تحسينات للعناصر التفاعلية
+   Interactive Elements Enhancements
    ======================================== */
 button, a {
   transition: all 0.3s ease;
 }
 
 button:active {
-  transform: scale(0.95);
+  transform: scale(0.97);
+}
+
+/* أزرار حكومية - Government Buttons */
+button.gov-primary {
+  background: var(--gov-blue);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
+}
+
+button.gov-primary:hover {
+  background: var(--gov-blue-dark);
+  box-shadow: 0 6px 20px rgba(30, 64, 175, 0.4);
+}
+
+button.gov-secondary {
+  background: white;
+  color: var(--gov-blue);
+  border: 2px solid var(--gov-blue);
+}
+
+button.gov-secondary:hover {
+  background: var(--gov-blue);
+  color: white;
 }
 
 /* ========================================
    تحسينات Responsive
+   Responsive Improvements
    ======================================== */
 @media (max-width: 768px) {
   body {
@@ -260,40 +357,48 @@ button:active {
   .card-glass:hover {
     transform: translateY(-2px);
   }
+
+  body::after {
+    width: 200px;
+    height: 200px;
+  }
 }
 
 /* ========================================
    Selection (تحديد النص)
+   Text Selection
    ======================================== */
 ::selection {
-  background: rgba(124, 58, 237, 0.5);
-  color: white;
+  background: rgba(30, 64, 175, 0.3);
+  color: var(--text-primary);
 }
 
 ::-moz-selection {
-  background: rgba(124, 58, 237, 0.5);
-  color: white;
+  background: rgba(30, 64, 175, 0.3);
+  color: var(--text-primary);
 }
 
 /* ========================================
-   Focus Styles
+   Focus Styles - حكومي
+   Government Focus Styles
    ======================================== */
 *:focus {
-  outline: 2px solid var(--primary-purple);
+  outline: 2px solid var(--gov-blue);
   outline-offset: 2px;
 }
 
 button:focus,
 a:focus {
-  outline: 2px solid var(--accent-pink);
+  outline: 2px solid var(--gov-gold);
 }
 
 /* ========================================
-   Loading Spinner (اختياري)
+   Loading Spinner - حكومي
+   Government Loading Spinner
    ======================================== */
-.spinner {
-  border: 3px solid rgba(255, 255, 255, 0.2);
-  border-top-color: var(--primary-purple);
+.spinner-gov {
+  border: 3px solid rgba(30, 64, 175, 0.2);
+  border-top-color: var(--gov-blue);
   border-radius: 50%;
   width: 40px;
   height: 40px;
@@ -302,4 +407,62 @@ a:focus {
 
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+/* ========================================
+   Header حكومي رسمي
+   Official Government Header
+   ======================================== */
+.header-official {
+  background: white;
+  border-bottom: 3px solid var(--gov-blue);
+  box-shadow: 0 2px 10px rgba(30, 64, 175, 0.1);
+}
+
+/* ========================================
+   Footer حكومي
+   Government Footer
+   ======================================== */
+.footer-official {
+  background: var(--gov-blue-dark);
+  color: white;
+  border-top: 3px solid var(--gov-gold);
+}
+
+/* ========================================
+   Divider خط فاصل حكومي
+   Government Divider
+   ======================================== */
+.divider-gov {
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gov-blue), transparent);
+  margin: 2rem 0;
+}
+
+/* ========================================
+   Alert Messages - رسائل التنبيه
+   Government Alert Styles
+   ======================================== */
+.alert-success {
+  background: rgba(16, 185, 129, 0.1);
+  border-right: 4px solid var(--gov-green);
+  color: #065f46;
+}
+
+.alert-warning {
+  background: rgba(251, 191, 36, 0.1);
+  border-right: 4px solid var(--gov-gold);
+  color: #92400e;
+}
+
+.alert-danger {
+  background: rgba(239, 68, 68, 0.1);
+  border-right: 4px solid var(--gov-red);
+  color: #7f1d1d;
+}
+
+.alert-info {
+  background: rgba(30, 64, 175, 0.1);
+  border-right: 4px solid var(--gov-blue);
+  color: var(--gov-blue-dark);
 }
