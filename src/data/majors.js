@@ -1,7 +1,12 @@
 // ========================================
-// بيانات التخصصات الجامعية في الكويت
-// Kuwait University Majors Data
+// بيانات التخصصات الجامعية في الكويت + نسب القبول الرسمية
+// Kuwait University Majors Data + Official Admission Rates
 // ========================================
+
+// المصادر الرسمية | Official Sources
+// 1. جامعة الكويت - do.ku.edu.kw (17 مايو 2025)
+// 2. الهيئة العامة للتعليم التطبيقي - e.paaet.edu.kw (يناير 2025)
+// 3. وزارة التعليم العالي - mohe.edu.kw (يونيو 2024)
 
 export const majorsData = [
   // ========================================
@@ -22,6 +27,45 @@ export const majorsData = [
     employmentRate: "96.3%",
     waitingPeriod: "6-9 أشهر",
     description: "مجال مطلوب في الكويت بسبب التحول الرقمي السريع في القطاعات الحكومية والخاصة.",
+    
+    // نسب القبول الرسمية | Official Admission Data
+    admissionData: {
+      kuwaitUniversity: {
+        college: "كلية الهندسة والبترول - قسم الحاسوب",
+        minPercentage: "80%",
+        requirements: "المعدل المكافئ (80% ثانوية + 15% إنجليزي + 10% رياضيات)",
+        year: "2024/2025",
+        source: "https://do.ku.edu.kw",
+        lastUpdated: "17 مايو 2025"
+      },
+      paaet: {
+        college: "كلية الدراسات التكنولوجية",
+        minPercentage: "65%",
+        requirements: "شهادة حديثة علمي",
+        programs: [
+          "تكنولوجيا هندسة كمبيوتر - 65%",
+          "تكنولوجيا هندسة اتصالات - 65%"
+        ],
+        year: "2024/2025",
+        source: "https://e.paaet.edu.kw"
+      },
+      privateUniversities: [
+        { name: "AUK", minGPA: "2.5/4.0" },
+        { name: "GUST", minGPA: "2.0/4.0" },
+        { name: "ACK", minGPA: "2.0/4.0" }
+      ]
+    },
+
+    // البعثات الخارجية | Scholarships
+    scholarships: {
+      available: true,
+      countries: ["أمريكا", "بريطانيا", "كندا", "أستراليا"],
+      minPercentage: "85%",
+      requirements: "IELTS 5.0 أو TOEFL 45",
+      source: "وزارة التعليم العالي",
+      notes: "متاح في خطة البعثات السنوية"
+    },
+
     certificates: [
       "AWS Certified Solutions Architect",
       "Data Science Specialization (Coursera)",
@@ -51,6 +95,7 @@ export const majorsData = [
       { level: "مدير مشاريع تقنية", years: "6-10", salary: "1800 د.ك" }
     ]
   },
+
   {
     id: 2,
     name: "الأمن السيبراني 🔐",
@@ -65,6 +110,32 @@ export const majorsData = [
     employmentRate: "98.5%",
     waitingPeriod: "3-6 أشهر",
     description: "قطاع الأمن السيبراني من أكثر المجالات نموًا في الكويت مع زيادة التحول الرقمي.",
+    
+    admissionData: {
+      kuwaitUniversity: {
+        college: "كلية الهندسة والبترول",
+        minPercentage: "80%",
+        requirements: "المعدل المكافئ + اختبارات القدرات",
+        year: "2024/2025",
+        source: "https://do.ku.edu.kw"
+      },
+      paaet: {
+        college: "غير متوفر حالياً",
+        note: "يتم التدريب عبر دورات متخصصة"
+      }
+    },
+
+    scholarships: {
+      available: true,
+      countries: ["أمريكا", "بريطانيا", "كندا"],
+      minPercentage: "85%",
+      requirements: "IELTS 5.0 + اختبارات القدرات",
+      popularPrograms: [
+        "Cybersecurity Engineering",
+        "Information Security"
+      ]
+    },
+
     certificates: [
       "CompTIA Security+",
       "Certified Ethical Hacker (CEH)",
@@ -94,6 +165,7 @@ export const majorsData = [
       { level: "مدير أمن المعلومات", years: "6-10", salary: "2000 د.ك" }
     ]
   },
+
   {
     id: 3,
     name: "الذكاء الاصطناعي 🤖",
@@ -108,6 +180,29 @@ export const majorsData = [
     employmentRate: "97.8%",
     waitingPeriod: "3-6 أشهر",
     description: "مدعوم من رؤية الكويت 2035 للتحول الرقمي، والطلب في تزايد على المتخصصين.",
+    
+    admissionData: {
+      kuwaitUniversity: {
+        college: "كلية الهندسة والبترول - برنامج حديث",
+        minPercentage: "80%",
+        requirements: "المعدل المكافئ + تفوق في الرياضيات",
+        year: "2024/2025",
+        source: "https://do.ku.edu.kw"
+      }
+    },
+
+    scholarships: {
+      available: true,
+      countries: ["أمريكا", "بريطانيا", "كندا", "سنغافورة"],
+      minPercentage: "88%",
+      requirements: "IELTS 6.0 + اختبارات القدرات (رياضيات عالي)",
+      topUniversities: [
+        "MIT", "Stanford", "Carnegie Mellon",
+        "University of Toronto", "NUS Singapore"
+      ],
+      notes: "تخصص مطلوب ومدعوم في البعثات المتميزة"
+    },
+
     certificates: [
       "Machine Learning by Andrew Ng (Coursera)",
       "Deep Learning Specialization",
@@ -156,6 +251,32 @@ export const majorsData = [
     employmentRate: "92.7%",
     waitingPeriod: "9-12 شهر",
     description: "مشاريع التنمية والبنية التحتية ترفع الطلب على المهندسين المدنيين في الكويت.",
+    
+    admissionData: {
+      kuwaitUniversity: {
+        college: "كلية الهندسة والبترول",
+        minPercentage: "80%",
+        requirements: "المعدل المكافئ (80% ثانوية + 15% إنجليزي + 10% رياضيات + اجتياز كيمياء)",
+        year: "2024/2025",
+        source: "https://do.ku.edu.kw",
+        lastUpdated: "17 مايو 2025"
+      },
+      paaet: {
+        college: "كلية الدراسات التكنولوجية",
+        programs: [
+          "تكنولوجيا الهندسة المدنية - 65%"
+        ],
+        year: "2024/2025"
+      }
+    },
+
+    scholarships: {
+      available: true,
+      countries: ["أمريكا", "بريطانيا", "كندا", "أستراليا", "ألمانيا"],
+      minPercentage: "85%",
+      requirements: "IELTS 5.0 أو TOEFL 45"
+    },
+
     certificates: [
       "PMP (Project Management Professional)",
       "AutoCAD & Revit",
@@ -185,6 +306,7 @@ export const majorsData = [
       { level: "مدير مشاريع", years: "8-12", salary: "1600 د.ك" }
     ]
   },
+
   {
     id: 5,
     name: "الهندسة الكهربائية ⚡",
@@ -199,6 +321,28 @@ export const majorsData = [
     employmentRate: "94.2%",
     waitingPeriod: "7-10 أشهر",
     description: "احتياج مستمر في قطاع الكهرباء والطاقة المتجددة.",
+    
+    admissionData: {
+      kuwaitUniversity: {
+        college: "كلية الهندسة والبترول",
+        minPercentage: "80%",
+        requirements: "المعدل المكافئ + اختبارات القدرات",
+        year: "2024/2025",
+        source: "https://do.ku.edu.kw"
+      },
+      paaet: {
+        college: "المعهد العالي للطاقة",
+        minPercentage: "50% علمي",
+        year: "2024/2025"
+      }
+    },
+
+    scholarships: {
+      available: true,
+      countries: ["أمريكا", "بريطانيا", "ألمانيا", "كوريا الجنوبية"],
+      minPercentage: "85%"
+    },
+
     certificates: [
       "PLC Programming",
       "SCADA Systems",
@@ -227,6 +371,7 @@ export const majorsData = [
       { level: "مهندس استشاري", years: "8-12", salary: "1700 د.ك" }
     ]
   },
+
   {
     id: 6,
     name: "الهندسة الميكانيكية ⚙️",
@@ -241,6 +386,23 @@ export const majorsData = [
     employmentRate: "91.5%",
     waitingPeriod: "10-14 شهر",
     description: "مطلوب في الصناعة والبترول والتصنيع.",
+    
+    admissionData: {
+      kuwaitUniversity: {
+        college: "كلية الهندسة والبترول",
+        minPercentage: "80%",
+        requirements: "المعدل المكافئ + اختبارات القدرات",
+        year: "2024/2025",
+        source: "https://do.ku.edu.kw"
+      }
+    },
+
+    scholarships: {
+      available: true,
+      countries: ["أمريكا", "بريطانيا", "ألمانيا", "اليابان"],
+      minPercentage: "85%"
+    },
+
     certificates: [
       "SolidWorks Professional",
       "ANSYS Simulation",
@@ -269,6 +431,7 @@ export const majorsData = [
       { level: "مهندس رئيسي", years: "8-12", salary: "1500 د.ك" }
     ]
   },
+
   {
     id: 7,
     name: "هندسة البترول 🛢️",
@@ -283,6 +446,26 @@ export const majorsData = [
     employmentRate: "93.8%",
     waitingPeriod: "12-18 شهر",
     description: "تخصص استراتيجي في الكويت بسبب القطاع النفطي.",
+    
+    admissionData: {
+      kuwaitUniversity: {
+        college: "كلية الهندسة والبترول",
+        minPercentage: "80%",
+        requirements: "المعدل المكافئ + اختبارات القدرات",
+        year: "2024/2025",
+        source: "https://do.ku.edu.kw",
+        note: "تخصص استراتيجي مطلوب"
+      }
+    },
+
+    scholarships: {
+      available: true,
+      countries: ["أمريكا", "بريطانيا", "النرويج", "كندا"],
+      minPercentage: "88%",
+      requirements: "IELTS 5.0 + اختبارات قدرات عالية",
+      note: "مدعوم من مؤسسة البترول الكويتية"
+    },
+
     certificates: [
       "Petroleum Engineering Certification",
       "Reservoir Engineering",
@@ -330,6 +513,33 @@ export const majorsData = [
     employmentRate: "99.2%",
     waitingPeriod: "فوري - 3 أشهر",
     description: "احتياج مستمر ومتزايد في وزارة الصحة والمستشفيات الحكومية.",
+    
+    admissionData: {
+      kuwaitUniversity: {
+        college: "كلية الطب",
+        minPercentage: "96.22%",
+        requirements: "المعدل المكافئ (أعلى نسبة قبول في الجامعة)",
+        year: "2024/2025",
+        source: "https://do.ku.edu.kw",
+        lastUpdated: "17 مايو 2025",
+        note: "منافسة شديدة - أعلى نسبة قبول"
+      }
+    },
+
+    scholarships: {
+      available: true,
+      countries: ["مصر", "الأردن", "السعودية", "الإمارات", "أيرلندا", "بولندا"],
+      minPercentage: "90%",
+      requirements: "IELTS 5.0 للدول الأجنبية (غير مطلوب للدول العربية)",
+      popularCountries: [
+        "مصر - جامعات القاهرة والإسكندرية وعين شمس",
+        "الأردن - الجامعة الأردنية",
+        "أيرلندا - RCSI",
+        "بولندا - Medical University of Warsaw"
+      ],
+      notes: "بعثات طبية متميزة متاحة للمتفوقين"
+    },
+
     certificates: [
       "USMLE / PLAB",
       "تخصصات طبية متقدمة",
@@ -358,6 +568,7 @@ export const majorsData = [
       { level: "طبيب استشاري", years: "9-15", salary: "3000 د.ك" }
     ]
   },
+
   {
     id: 9,
     name: "طب الأسنان 🦷",
@@ -372,6 +583,26 @@ export const majorsData = [
     employmentRate: "97.5%",
     waitingPeriod: "3-6 أشهر",
     description: "مجال مطلوب في القطاع الحكومي والخاص.",
+    
+    admissionData: {
+      kuwaitUniversity: {
+        college: "كلية طب الأسنان",
+        minPercentage: "95.6%",
+        requirements: "المعدل المكافئ (ثاني أعلى نسبة بعد الطب البشري)",
+        year: "2024/2025",
+        source: "https://do.ku.edu.kw",
+        lastUpdated: "17 مايو 2025"
+      }
+    },
+
+    scholarships: {
+      available: true,
+      countries: ["مصر", "الأردن", "السعودية", "أيرلندا", "رومانيا"],
+      minPercentage: "90%",
+      requirements: "IELTS 5.0 للدول الأجنبية",
+      note: "متاح في خطة البعثات الطبية"
+    },
+
     certificates: [
       "تقويم الأسنان",
       "جراحة الفم",
@@ -398,6 +629,7 @@ export const majorsData = [
       { level: "استشاري", years: "9-15", salary: "2500 د.ك" }
     ]
   },
+
   {
     id: 10,
     name: "الصيدلة 💊",
@@ -412,6 +644,25 @@ export const majorsData = [
     employmentRate: "94.8%",
     waitingPeriod: "6-9 أشهر",
     description: "احتياج مستمر في المستشفيات والصيدليات.",
+    
+    admissionData: {
+      kuwaitUniversity: {
+        college: "كلية الصيدلة",
+        minPercentage: "93.55%",
+        requirements: "المعدل المكافئ",
+        year: "2024/2025",
+        source: "https://do.ku.edu.kw",
+        lastUpdated: "17 مايو 2025"
+      }
+    },
+
+    scholarships: {
+      available: true,
+      countries: ["مصر", "الأردن", "السعودية", "بريطانيا"],
+      minPercentage: "90%",
+      requirements: "IELTS 5.0 للدول الأجنبية"
+    },
+
     certificates: [
       "Clinical Pharmacy",
       "Hospital Pharmacy",
@@ -439,6 +690,7 @@ export const majorsData = [
       { level: "صيدلي استشاري", years: "8-12", salary: "1600 د.ك" }
     ]
   },
+
   {
     id: 11,
     name: "التمريض 👩‍⚕️",
@@ -453,6 +705,35 @@ export const majorsData = [
     employmentRate: "99.5%",
     waitingPeriod: "فوري",
     description: "احتياج شديد ومستمر في جميع المرافق الصحية.",
+    
+    admissionData: {
+      kuwaitUniversity: {
+        college: "كلية العلوم الصحية",
+        minPercentage: "83.29%",
+        requirements: "المعدل المكافئ",
+        year: "2024/2025",
+        source: "https://do.ku.edu.kw"
+      },
+      paaet: {
+        college: "كلية التمريض",
+        programs: [
+          "التمريض العام (بكالوريوس) - 65%",
+          "التمريض المدرسي (بكالوريوس) - 65%",
+          "التمريض العام (دبلوم) - 55%"
+        ],
+        year: "2024/2025",
+        source: "https://e.paaet.edu.kw",
+        note: "قبول فوري - احتياج شديد"
+      }
+    },
+
+    scholarships: {
+      available: true,
+      countries: ["بريطانيا", "أستراليا", "كندا", "الفلبين"],
+      minPercentage: "80%",
+      note: "بعثات متاحة للتمريض التخصصي"
+    },
+
     certificates: [
       "BLS & ACLS",
       "ICU Nursing",
@@ -500,6 +781,29 @@ export const majorsData = [
     employmentRate: "93.2%",
     waitingPeriod: "9-12 شهر",
     description: "يشهد القطاع المالي تحولاً رقمياً كبيراً مع دخول التكنولوجيا المالية (FinTech).",
+    
+    admissionData: {
+      kuwaitUniversity: {
+        college: "كلية العلوم الإدارية",
+        minPercentage: "78% أدبي / 70% علمي",
+        requirements: "حسب النظام المكافئ",
+        year: "2024/2025",
+        source: "https://do.ku.edu.kw"
+      },
+      paaet: {
+        college: "كلية الدراسات التجارية",
+        programs: ["العلوم المالية والمصرفية"],
+        minPercentage: "حسب المعدل التنافسي",
+        year: "2024/2025"
+      }
+    },
+
+    scholarships: {
+      available: true,
+      countries: ["أمريكا", "بريطانيا", "كندا", "سنغافورة"],
+      minPercentage: "85%"
+    },
+
     certificates: [
       "Certified Financial Analyst (CFA)",
       "FinTech & Blockchain",
@@ -529,6 +833,7 @@ export const majorsData = [
       { level: "مدير مالي", years: "9-15", salary: "1500 د.ك" }
     ]
   },
+
   {
     id: 13,
     name: "إدارة الأعمال 📊",
@@ -543,6 +848,21 @@ export const majorsData = [
     employmentRate: "89.5%",
     waitingPeriod: "12-18 شهر",
     description: "مطلوب في معظم القطاعات لإدارة المشاريع والعمليات.",
+    
+    admissionData: {
+      kuwaitUniversity: {
+        college: "كلية العلوم الإدارية",
+        minPercentage: "78% أدبي / 70% علمي",
+        year: "2024/2025"
+      }
+    },
+
+    scholarships: {
+      available: true,
+      countries: ["أمريكا", "بريطانيا", "كندا", "أستراليا"],
+      minPercentage: "85%"
+    },
+
     certificates: [
       "PMP",
       "MBA",
@@ -573,6 +893,7 @@ export const majorsData = [
       { level: "مدير عام", years: "9-15", salary: "1400 د.ك" }
     ]
   },
+
   {
     id: 14,
     name: "المحاسبة 🧮",
@@ -587,6 +908,26 @@ export const majorsData = [
     employmentRate: "92.8%",
     waitingPeriod: "9-14 شهر",
     description: "احتياج مستمر في جميع القطاعات.",
+    
+    admissionData: {
+      kuwaitUniversity: {
+        college: "كلية العلوم الإدارية",
+        minPercentage: "78% أدبي / 70% علمي",
+        year: "2024/2025"
+      },
+      paaet: {
+        college: "كلية الدراسات التجارية",
+        programs: ["المحاسبة"],
+        year: "2024/2025"
+      }
+    },
+
+    scholarships: {
+      available: true,
+      countries: ["أمريكا", "بريطانيا", "كندا"],
+      minPercentage: "85%"
+    },
+
     certificates: [
       "CPA (Certified Public Accountant)",
       "CMA (Certified Management Accountant)",
@@ -635,6 +976,23 @@ export const majorsData = [
     employmentRate: "88.5%",
     waitingPeriod: "14-24 شهر",
     description: "مطلوب في الجهات الحكومية والقطاع الخاص.",
+    
+    admissionData: {
+      kuwaitUniversity: {
+        college: "كلية الحقوق",
+        minPercentage: "78% أدبي",
+        requirements: "لا يعتمد على المعدل المكافئ",
+        year: "2024/2025",
+        source: "https://do.ku.edu.kw"
+      }
+    },
+
+    scholarships: {
+      available: true,
+      countries: ["مصر", "الأردن", "بريطانيا", "فرنسا"],
+      minPercentage: "85%"
+    },
+
     certificates: [
       "ترخيص المحاماة",
       "التحكيم الدولي",
@@ -681,6 +1039,30 @@ export const majorsData = [
     employmentRate: "96.8%",
     waitingPeriod: "6-12 شهر",
     description: "احتياج مستمر في وزارة التربية.",
+    
+    admissionData: {
+      kuwaitUniversity: {
+        college: "كلية التربية",
+        minPercentage: "78% أدبي / 70% علمي",
+        requirements: "المعدل المكافئ + مقابلة شخصية",
+        year: "2024/2025",
+        source: "https://do.ku.edu.kw"
+      },
+      paaet: {
+        college: "كلية التربية الأساسية",
+        minPercentage: "حسب التخصص",
+        requirements: "مقابلة شخصية إلزامية",
+        year: "2024/2025",
+        note: "أكبر كلية في التطبيقي"
+      }
+    },
+
+    scholarships: {
+      available: true,
+      countries: ["بريطانيا", "أمريكا", "كندا", "أستراليا"],
+      minPercentage: "85%"
+    },
+
     certificates: [
       "رخصة التدريس",
       "التعليم الإلكتروني",
@@ -727,6 +1109,21 @@ export const majorsData = [
     employmentRate: "87.3%",
     waitingPeriod: "12-18 شهر",
     description: "مطلوب في الإعلام الحكومي والخاص.",
+    
+    admissionData: {
+      kuwaitUniversity: {
+        college: "كلية الآداب - قسم الإعلام",
+        minPercentage: "78% أدبي",
+        year: "2024/2025"
+      }
+    },
+
+    scholarships: {
+      available: true,
+      countries: ["أمريكا", "بريطانيا", "لبنان", "مصر"],
+      minPercentage: "85%"
+    },
+
     certificates: [
       "Digital Marketing",
       "Social Media Management",
@@ -774,6 +1171,22 @@ export const majorsData = [
     employmentRate: "90.2%",
     waitingPeriod: "10-16 شهر",
     description: "زيادة الطلب بسبب التركيز على الاستدامة.",
+    
+    admissionData: {
+      kuwaitUniversity: {
+        college: "كلية العلوم",
+        minPercentage: "70% علمي",
+        requirements: "لا يعتمد على المعدل المكافئ",
+        year: "2024/2025"
+      }
+    },
+
+    scholarships: {
+      available: true,
+      countries: ["أمريكا", "بريطانيا", "ألمانيا", "السويد"],
+      minPercentage: "85%"
+    },
+
     certificates: [
       "Environmental Impact Assessment",
       "ISO 14001",
@@ -820,6 +1233,21 @@ export const majorsData = [
     employmentRate: "91.5%",
     waitingPeriod: "8-14 شهر",
     description: "مطلوب في التعليم والترجمة.",
+    
+    admissionData: {
+      kuwaitUniversity: {
+        college: "كلية الآداب - قسم اللغة الإنجليزية",
+        minPercentage: "78% أدبي",
+        year: "2024/2025"
+      }
+    },
+
+    scholarships: {
+      available: true,
+      countries: ["بريطانيا", "أمريكا", "كندا", "أستراليا"],
+      minPercentage: "85%"
+    },
+
     certificates: [
       "TESOL/TEFL",
       "CELTA",
@@ -863,6 +1291,22 @@ export const majorsData = [
     employmentRate: "89.8%",
     waitingPeriod: "10-16 شهر",
     description: "زيادة الوعي بالصحة النفسية يرفع الطلب.",
+    
+    admissionData: {
+      kuwaitUniversity: {
+        college: "كلية العلوم الاجتماعية",
+        minPercentage: "78% أدبي",
+        requirements: "اختبار لغة عربية 15%",
+        year: "2024/2025"
+      }
+    },
+
+    scholarships: {
+      available: true,
+      countries: ["أمريكا", "بريطانيا", "كندا"],
+      minPercentage: "85%"
+    },
+
     certificates: [
       "رخصة العلاج النفسي",
       "CBT Certification",
@@ -893,17 +1337,15 @@ export const majorsData = [
 ];
 
 // ========================================
-// فلترة التخصصات حسب الفئة
-// Filter majors by category
+// دوال مساعدة | Helper Functions
 // ========================================
+
+// فلترة التخصصات حسب الفئة
 export const getMajorsByCategory = (category) => {
   return majorsData.filter(major => major.category === category);
 };
 
-// ========================================
 // البحث في التخصصات
-// Search majors
-// ========================================
 export const searchMajors = (query) => {
   const lowercaseQuery = query.toLowerCase();
   return majorsData.filter(major => 
@@ -912,18 +1354,25 @@ export const searchMajors = (query) => {
   );
 };
 
-// ========================================
 // ترتيب التخصصات حسب الطلب
-// Sort majors by demand
-// ========================================
 export const getMajorsSortedByDemand = () => {
   return [...majorsData].sort((a, b) => b.demandLevel - a.demandLevel);
 };
 
-// ========================================
-// الحصول على أفضل 5 تخصصات
-// Get top 5 majors
-// ========================================
+// الحصول على أفضل تخصصات
 export const getTopMajors = (count = 5) => {
   return getMajorsSortedByDemand().slice(0, count);
+};
+
+// التخصصات المتاحة في البعثات الخارجية
+export const getMajorsWithScholarships = () => {
+  return majorsData.filter(major => major.scholarships?.available === true);
+};
+
+// التخصصات حسب نسبة القبول
+export const getMajorsByAdmissionRate = (minPercentage) => {
+  return majorsData.filter(major => {
+    const kuPercentage = parseFloat(major.admissionData?.kuwaitUniversity?.minPercentage);
+    return !isNaN(kuPercentage) && kuPercentage <= minPercentage;
+  });
 };
