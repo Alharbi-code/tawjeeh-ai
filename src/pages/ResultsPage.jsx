@@ -50,55 +50,94 @@ export default function ResultsPage({ results, onRestart, onBackToAssessment }) 
     }
   };
 
-  // Export results as text
+  // Export results as text - ENHANCED VERSION
   const handleExport = () => {
     const text = `
-تقرير التوصيات المهنية - توجيه AI
-التاريخ: ${new Date().toLocaleDateString('ar-KW')}
+═══════════════════════════════════════════════════════
+        تقرير التوصيات المهنية - توجيه AI
+═══════════════════════════════════════════════════════
 
-التخصصات الموصى بها:
+التاريخ: ${new Date().toLocaleDateString('ar-KW')}
+عدد التخصصات الموصى بها: ${recommendations.length}
+
+───────────────────────────────────────────────────────
+              التخصصات الموصى بها
+───────────────────────────────────────────────────────
+
 ${recommendations.map((m, i) => `
-${i + 1}. ${m.name}
-   - نسبة التطابق: ${m.matchScore}%
-   - متوسط الراتب: ${m.salary.avg} د.ك
-   - مدة الدراسة: ${m.studyYears} سنوات
-   - فترة الانتظار: ${m.waitingMonths} شهر
+${i + 1}. ${m.name} ${i === 0 ? '⭐ (الأفضل لك)' : ''}
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   📊 نسبة التطابق: ${m.matchScore}%
+   💰 متوسط الراتب: ${m.salary.avg} د.ك (${m.salary.min} - ${m.salary.max})
+   📚 مدة الدراسة: ${m.studyYears} سنوات
+   ⏳ فترة الانتظار المتوقعة: ${m.waitingMonths} شهر
+   📈 مستوى الطلب: ${m.demandLevel}%
+   👥 عدد التوظيف السنوي: ${m.hiredPerYear}
+   ${m.advantages ? `\n   ✅ المميزات:\n${m.advantages.map(a => `      • ${a}`).join('\n')}` : ''}
+   ${m.disadvantages ? `\n   ⚠️  التحديات:\n${m.disadvantages.map(d => `      • ${d}`).join('\n')}` : ''}
 `).join('\n')}
+
+───────────────────────────────────────────────────────
+                   معلومات إضافية
+───────────────────────────────────────────────────────
+
+• متوسط الرواتب للتخصصات المقترحة: ${Math.round(recommendations.reduce((sum, m) => sum + m.salary.avg, 0) / recommendations.length)} د.ك
+• عدد التخصصات ذات الطلب العالي: ${recommendations.filter(m => m.demandLevel >= 75).length}
+• أقصر فترة انتظار: ${Math.min(...recommendations.map(m => m.waitingMonths))} شهر
+
+═══════════════════════════════════════════════════════
+تم إنشاء هذا التقرير بواسطة توجيه AI
+مشروع تخرج 2025 - الكلية التقنية، الكويت
+═══════════════════════════════════════════════════════
     `;
     
     const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'tawjeeh-ai-results.txt';
+    a.download = `tawjeeh-ai-results-${new Date().toISOString().split('T')[0]}.txt`;
     a.click();
+    URL.revokeObjectURL(url);
   };
 
-  // Share results
+  // Share results - ENHANCED VERSION
   const handleShare = () => {
+    const shareText = `🎓 نتائج توجيه AI\n\n✨ أفضل تخصص لي: ${topMajor?.name}\n📊 نسبة التطابق: ${topMajor?.matchScore}%\n💰 متوسط الراتب: ${topMajor?.salary.avg} د.ك\n\n🔗 اكتشف تخصصك المناسب الآن!`;
+    
     if (navigator.share) {
       navigator.share({
-        title: 'نتائج توجيه AI',
-        text: `أفضل تخصص موصى به لي: ${topMajor?.name} بنسبة تطابق ${topMajor?.matchScore}%`,
+        title: 'نتائج توجيه AI - منصة التوجيه المهني الذكية',
+        text: shareText,
         url: window.location.href
+      }).catch((error) => {
+        if (error.name !== 'AbortError') {
+          console.log('Error sharing:', error);
+        }
       });
     } else {
-      alert('المشاركة غير مدعومة في هذا المتصفح');
+      // Fallback: Copy to clipboard
+      navigator.clipboard.writeText(shareText + '\n' + window.location.href)
+        .then(() => alert('✅ تم نسخ النتائج للحافظة!'))
+        .catch(() => alert('⚠️ فشل النسخ. جرب مرة أخرى.'));
     }
   };
 
-  // Prepare chart data
-  const salaryComparisonData = recommendations.slice(0, 5).map(m => ({
-    name: m.name.split(' ')[0],
+  // Prepare chart data - NOW SHOWS TOP 10!
+  const salaryComparisonData = recommendations.slice(0, 10).map(m => ({
+    name: m.name.length > 15 ? m.name.substring(0, 12) + '...' : m.name,
     الراتب: m.salary.avg
   }));
 
-  const matchScoreData = recommendations.slice(0, 5).map(m => ({
-    name: m.name.split(' ')[0],
+  const matchScoreData = recommendations.slice(0, 10).map(m => ({
+    name: m.name.length > 15 ? m.name.substring(0, 12) + '...' : m.name,
     التطابق: m.matchScore
   }));
 
-  const COLORS = ['#facc15', '#3b82f6', '#10b981', '#f59e0b', '#ef4444'];
+  // 10 COLORS for 10 majors
+  const COLORS = [
+    '#facc15', '#3b82f6', '#10b981', '#f59e0b', '#ef4444',
+    '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16', '#f97316'
+  ];
 
   // ========================================
   // Render Functions
@@ -114,7 +153,7 @@ ${i + 1}. ${m.name}
         🎉 تهانينا! نتائجك جاهزة
       </h1>
       <p className="text-xl text-purple-200 mb-6">
-        حللنا اختياراتك ووجدنا أفضل {recommendations.length} تخصصات مناسبة لك
+        حللنا اختياراتك ووجدنا أفضل {recommendations.length} {recommendations.length === 10 ? 'تخصصات' : 'تخصص'} مناسبة لك
       </p>
       
       {/* Quick Stats */}
@@ -452,37 +491,65 @@ ${i + 1}. ${m.name}
     </div>
   );
 
-  // Render Comparison View
+  // Render Comparison View - ENHANCED WITH 10 RESULTS
   const renderComparison = () => (
     <div className="max-w-6xl mx-auto">
       <div className="card-glass rounded-2xl p-6 mb-6">
         <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
           <BarChart3 className="w-6 h-6 text-blue-400" />
-          مقارنة التخصصات
+          مقارنة التخصصات - أفضل {recommendations.length} نتيجة
         </h2>
         
         {/* Salary Comparison Chart */}
         <div className="mb-8">
-          <h3 className="text-lg font-semibold mb-3">مقارنة الرواتب</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={salaryComparisonData}>
-              <XAxis dataKey="name" stroke="#fff" />
+          <h3 className="text-lg font-semibold mb-3">مقارنة الرواتب (د.ك)</h3>
+          <ResponsiveContainer width="100%" height={400}>
+            <BarChart data={salaryComparisonData} margin={{ bottom: 60 }}>
+              <XAxis 
+                dataKey="name" 
+                stroke="#fff" 
+                angle={-45}
+                textAnchor="end"
+                height={80}
+                fontSize={11}
+              />
               <YAxis stroke="#fff" />
-              <Tooltip />
-              <Bar dataKey="الراتب" fill="#10b981" radius={[8, 8, 0, 0]} />
+              <Tooltip 
+                contentStyle={{ backgroundColor: '#1e1b4b', border: '1px solid #facc15' }}
+                labelStyle={{ color: '#fff' }}
+              />
+              <Bar dataKey="الراتب" radius={[8, 8, 0, 0]}>
+                {salaryComparisonData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Bar>
             </BarChart>
           </ResponsiveContainer>
         </div>
 
         {/* Match Score Comparison */}
         <div>
-          <h3 className="text-lg font-semibold mb-3">مقارنة نسب التطابق</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={matchScoreData}>
-              <XAxis dataKey="name" stroke="#fff" />
-              <YAxis stroke="#fff" />
-              <Tooltip />
-              <Bar dataKey="التطابق" fill="#facc15" radius={[8, 8, 0, 0]} />
+          <h3 className="text-lg font-semibold mb-3">مقارنة نسب التطابق (%)</h3>
+          <ResponsiveContainer width="100%" height={400}>
+            <BarChart data={matchScoreData} margin={{ bottom: 60 }}>
+              <XAxis 
+                dataKey="name" 
+                stroke="#fff"
+                angle={-45}
+                textAnchor="end"
+                height={80}
+                fontSize={11}
+              />
+              <YAxis stroke="#fff" domain={[0, 100]} />
+              <Tooltip 
+                contentStyle={{ backgroundColor: '#1e1b4b', border: '1px solid #facc15' }}
+                labelStyle={{ color: '#fff' }}
+              />
+              <Bar dataKey="التطابق" radius={[8, 8, 0, 0]}>
+                {matchScoreData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Bar>
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -523,50 +590,89 @@ ${i + 1}. ${m.name}
     </div>
   );
 
-  // Render Market Insights
-  const renderInsights = () => (
-    <div className="max-w-4xl mx-auto">
-      <div className="card-glass rounded-2xl p-6">
-        <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-          <TrendingUp className="w-6 h-6 text-green-400" />
-          رؤى سوق العمل الكويتي
-        </h2>
+  // Render Market Insights - ENHANCED WITH STATS
+  const renderInsights = () => {
+    // Calculate average salary and demand from recommendations
+    const avgSalary = Math.round(recommendations.reduce((sum, m) => sum + m.salary.avg, 0) / recommendations.length);
+    const highDemandCount = recommendations.filter(m => m.demandLevel >= 75).length;
+    
+    return (
+      <div className="max-w-4xl mx-auto">
+        <div className="card-glass rounded-2xl p-6">
+          <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+            <TrendingUp className="w-6 h-6 text-green-400" />
+            رؤى سوق العمل الكويتي
+          </h2>
 
-        <div className="space-y-6">
-          {/* Key Insights */}
-          <div className="bg-blue-500/10 border-2 border-blue-500/30 rounded-xl p-4">
-            <h3 className="font-bold mb-3 text-blue-400">💡 نصائح مهمة</h3>
-            <ul className="space-y-2 text-sm">
-              <li className="flex items-start gap-2">
-                <CheckCircle className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
-                <span>التخصصات التقنية تشهد أعلى نمو في الطلب (+18% سنوياً)</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <CheckCircle className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
-                <span>القطاع الصحي يحتاج 450+ توظيف سنوياً</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <CheckCircle className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
-                <span>الحصول على شهادات إضافية يزيد فرص التوظيف بنسبة 40%</span>
-              </li>
-            </ul>
-          </div>
+          <div className="space-y-6">
+            {/* Statistics */}
+            <div className="grid md:grid-cols-3 gap-4 mb-6">
+              <div className="bg-gradient-to-br from-green-500/20 to-green-600/10 rounded-xl p-4 border border-green-500/30">
+                <div className="text-3xl font-bold text-green-400">{avgSalary} د.ك</div>
+                <div className="text-sm text-purple-200">متوسط الرواتب المتوقع</div>
+              </div>
+              <div className="bg-gradient-to-br from-blue-500/20 to-blue-600/10 rounded-xl p-4 border border-blue-500/30">
+                <div className="text-3xl font-bold text-blue-400">{highDemandCount}/{recommendations.length}</div>
+                <div className="text-sm text-purple-200">تخصصات عالية الطلب</div>
+              </div>
+              <div className="bg-gradient-to-br from-yellow-500/20 to-yellow-600/10 rounded-xl p-4 border border-yellow-500/30">
+                <div className="text-3xl font-bold text-yellow-400">{topMajor?.matchScore}%</div>
+                <div className="text-sm text-purple-200">أعلى نسبة تطابق</div>
+              </div>
+            </div>
 
-          {/* Next Steps */}
-          <div className="bg-green-500/10 border-2 border-green-500/30 rounded-xl p-4">
-            <h3 className="font-bold mb-3 text-green-400">🎯 خطواتك التالية</h3>
-            <ol className="space-y-2 text-sm list-decimal list-inside">
-              <li>راجع التخصصات المقترحة بعناية</li>
-              <li>تحدث مع طلاب أو خريجين في هذه التخصصات</li>
-              <li>زر الجامعات واحضر أيام التوجيه المهني</li>
-              <li>ابحث عن فرص تدريبية صيفية في المجال</li>
-              <li>استشر أهلك ومرشديك الأكاديميين</li>
-            </ol>
+            {/* Key Insights */}
+            <div className="bg-blue-500/10 border-2 border-blue-500/30 rounded-xl p-4">
+              <h3 className="font-bold mb-3 text-blue-400">💡 نصائح مهمة</h3>
+              <ul className="space-y-2 text-sm">
+                <li className="flex items-start gap-2">
+                  <CheckCircle className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
+                  <span>التخصصات التقنية تشهد أعلى نمو في الطلب (+18% سنوياً)</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
+                  <span>القطاع الصحي يحتاج 450+ توظيف سنوياً في الكويت</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
+                  <span>الحصول على شهادات إضافية يزيد فرص التوظيف بنسبة 40%</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
+                  <span>متوسط فترة الانتظار للتوظيف: {Math.round(recommendations.reduce((sum, m) => sum + m.waitingMonths, 0) / recommendations.length)} شهر</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Next Steps */}
+            <div className="bg-green-500/10 border-2 border-green-500/30 rounded-xl p-4">
+              <h3 className="font-bold mb-3 text-green-400">🎯 خطواتك التالية</h3>
+              <ol className="space-y-2 text-sm list-decimal list-inside">
+                <li>راجع التخصصات المقترحة بعناية وقارن بين خياراتك</li>
+                <li>تحدث مع طلاب أو خريجين في هذه التخصصات لمعرفة تجربتهم</li>
+                <li>زر الجامعات واحضر أيام التوجيه المهني والأبواب المفتوحة</li>
+                <li>ابحث عن فرص تدريبية صيفية أو تطوعية في المجال</li>
+                <li>استشر أهلك ومرشديك الأكاديميين قبل اتخاذ القرار النهائي</li>
+                <li>راجع متطلبات القبول في الجامعات للتخصصات المختارة</li>
+              </ol>
+            </div>
+
+            {/* Warning Box */}
+            <div className="bg-yellow-500/10 border-2 border-yellow-500/30 rounded-xl p-4">
+              <h3 className="font-bold mb-2 text-yellow-400 flex items-center gap-2">
+                <AlertCircle className="w-5 h-5" />
+                تنبيه مهم
+              </h3>
+              <p className="text-sm text-purple-200">
+                هذه النتائج مبنية على بيانات سوق العمل الحالية وتطابق اهتماماتك. 
+                يُنصح بمراجعة أحدث البيانات والإحصائيات قبل اتخاذ القرار النهائي.
+              </p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   // ========================================
   // Main Render
@@ -576,15 +682,16 @@ ${i + 1}. ${m.name}
     return (
       <div className="min-h-screen flex items-center justify-center p-6">
         <div className="card-glass rounded-2xl p-8 text-center max-w-md">
-          <AlertCircle className="w-16 h-16 text-yellow-400 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold mb-4">لا توجد نتائج</h2>
+          <AlertCircle className="w-16 h-16 text-yellow-400 mx-auto mb-4 animate-pulse" />
+          <h2 className="text-2xl font-bold mb-4">لا توجد نتائج متاحة</h2>
           <p className="text-purple-200 mb-6">
-            لم يتم العثور على نتائج. الرجاء العودة وإكمال التقييم.
+            لم يتم العثور على نتائج التقييم. يرجى العودة وإكمال التقييم للحصول على توصيات مخصصة لك.
           </p>
           <button
             onClick={onBackToAssessment || onRestart}
-            className="px-6 py-3 bg-yellow-400 text-black font-bold rounded-xl hover:scale-105 transition"
+            className="px-8 py-3 bg-yellow-400 text-black font-bold rounded-xl hover:scale-105 transition-transform flex items-center gap-2 mx-auto"
           >
+            <ArrowRight className="w-5 h-5" />
             العودة للتقييم
           </button>
         </div>
@@ -638,14 +745,15 @@ ${i + 1}. ${m.name}
       {/* Footer CTA */}
       <div className="text-center py-8">
         <div className="inline-block card-glass rounded-2xl p-6 max-w-2xl">
-          <Heart className="w-12 h-12 text-pink-400 mx-auto mb-3" />
+          <Heart className="w-12 h-12 text-pink-400 mx-auto mb-3 animate-pulse" />
           <h3 className="text-xl font-bold mb-2">شكراً لاستخدامك توجيه AI! 🎓</h3>
           <p className="text-purple-200 mb-4">
-            نتمنى لك التوفيق في مسيرتك الأكاديمية والمهنية
+            نتمنى لك التوفيق في مسيرتك الأكاديمية والمهنية. تذكر أن اختيار التخصص المناسب هو بداية رحلة النجاح!
           </p>
-          <p className="text-sm text-purple-300">
-            مشروع تخرج 2025 • الكلية التقنية - الكويت
-          </p>
+          <div className="text-sm text-purple-300 space-y-1">
+            <p className="font-semibold">مشروع تخرج 2025 • الكلية التقنية - الكويت</p>
+            <p className="text-xs">تم تطويره باستخدام تقنيات الذكاء الاصطناعي وتحليل البيانات</p>
+          </div>
         </div>
       </div>
     </div>
