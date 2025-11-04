@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { CheckCircle2, XCircle, ArrowRight, ArrowLeft, Sparkles, AlertCircle } from 'lucide-react';
+import { skillsData, interestsData, studyTypesData, majorsData } from '../data/majorsData';
 import { analyzeStudent } from '../utils/aiAdvisor';
 
 export default function AssessmentPage({ onFinish, onProgressUpdate }) {
@@ -14,58 +15,6 @@ export default function AssessmentPage({ onFinish, onProgressUpdate }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const totalSteps = 3;
-
-  // ========================================
-  // بيانات الأسئلة - Questions Data
-  // ========================================
-  
-  // الاهتمامات
-  const interestsOptions = [
-    { id: 'tech-numbers', label: 'التعامل مع الأرقام', icon: '🔢' },
-    { id: 'programming', label: 'البرمجة والتكنولوجيا', icon: '💻' },
-    { id: 'innovation', label: 'الابتكار والإبداع', icon: '💡' },
-    { id: 'design-planning', label: 'التصميم والتخطيط', icon: '📐' },
-    { id: 'tech-problems', label: 'حل المشاكل التقنية', icon: '🔧' },
-    { id: 'helping-people', label: 'مساعدة الناس', icon: '🤝' },
-    { id: 'medical-science', label: 'العلوم الطبية', icon: '🩺' },
-    { id: 'money-investment', label: 'المال والاستثمار', icon: '💰' },
-    { id: 'leadership', label: 'القيادة وإدارة الفرق', icon: '👔' },
-    { id: 'law-justice', label: 'القانون والعدالة', icon: '⚖️' },
-    { id: 'teaching', label: 'التدريس والتوجيه', icon: '👨‍🏫' },
-    { id: 'writing-communication', label: 'الكتابة والتواصل', icon: '✍️' },
-    { id: 'research', label: 'البحث العلمي', icon: '🔬' },
-    { id: 'environment', label: 'البيئة والاستدامة', icon: '🌱' }
-  ];
-
-  // المهارات
-  const skillsOptions = [
-    { id: 'coding', label: 'البرمجة وكتابة الأكواد', icon: '⌨️' },
-    { id: 'logical-thinking', label: 'التفكير المنطقي', icon: '🧩' },
-    { id: 'problem-solving', label: 'حل المشاكل المعقدة', icon: '🎯' },
-    { id: 'math-stats', label: 'الرياضيات والإحصاء', icon: '📊' },
-    { id: 'physics-chemistry', label: 'الفيزياء والكيمياء', icon: '⚗️' },
-    { id: 'research-analysis', label: 'البحث والتحليل', icon: '🔍' },
-    { id: 'patient-care', label: 'التعامل مع المرضى', icon: '💊' },
-    { id: 'precision', label: 'الدقة والتركيز', icon: '🎯' },
-    { id: 'communication', label: 'التواصل مع الآخرين', icon: '💬' },
-    { id: 'teamwork', label: 'العمل الجماعي', icon: '👥' },
-    { id: 'time-management', label: 'إدارة الوقت والموارد', icon: '⏰' },
-    { id: 'financial-planning', label: 'التخطيط المالي', icon: '💵' },
-    { id: 'writing', label: 'الكتابة والتعبير', icon: '📝' },
-    { id: 'design', label: 'التصميم والابتكار', icon: '🎨' }
-  ];
-
-  // التفضيلات الدراسية
-  const preferencesOptions = [
-    { id: 'short-duration', label: 'مدة دراسية قصيرة', icon: '⏱️' },
-    { id: 'practical', label: 'دراسة عملية', icon: '🔨' },
-    { id: 'theoretical', label: 'دراسة نظرية', icon: '📚' },
-    { id: 'mixed', label: 'نظري وعملي', icon: '⚖️' },
-    { id: 'field-work', label: 'عمل ميداني', icon: '🚧' },
-    { id: 'office-work', label: 'عمل مكتبي', icon: '🏢' },
-    { id: 'long-investment', label: 'استثمار طويل المدى', icon: '📈' },
-    { id: 'quick-entry', label: 'سجل نسبياً', icon: '🚀' }
-  ];
 
   // ========================================
   // تحديث Progress
@@ -139,22 +88,85 @@ export default function AssessmentPage({ onFinish, onProgressUpdate }) {
     }
 
     try {
-      // Prepare data for AI analysis
-      const assessmentData = {
-        interests: selectedInterests,
-        skills: selectedSkills,
-        studyPreferences: selectedPreferences
-      };
+      // Calculate scores using simple matching algorithm
+      const scores = {};
+      Object.keys(majorsData).forEach((key) => {
+        const m = majorsData[key];
+        let s = 0;
+
+        // 1) Match required skills
+        selectedSkills.forEach((sk) => {
+          if (m.requiredSkills?.includes(sk)) s += 30;
+        });
+
+        // 2) Match interests
+        selectedInterests.forEach((it) => {
+          if (it === 'tech' && key === 'cs') s += 25;
+          if (it === 'health' && (key === 'medicine' || key === 'pharmacy')) s += 25;
+          if (it === 'construction' && (key === 'engineering' || key === 'architecture')) s += 25;
+          if (it === 'business' && key === 'business') s += 20;
+          if (it === 'law' && key === 'law') s += 20;
+          if (it === 'education' && key === 'education') s += 20;
+          if ((it === 'art') && key === 'architecture') s += 20;
+        });
+
+        // 3) Match study preferences
+        selectedPreferences.forEach((p) => {
+          if (m.studyType?.includes(p)) s += 15;
+        });
+
+        // 4) Add market demand weight
+        s += Math.round((m.demandLevel || 60) / 5);
+
+        // Cap at 100
+        scores[key] = Math.min(s, 100);
+      });
+
+      // Get top 5 majors
+      let topMajors = Object.entries(scores)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5)
+        .map(([key, matchScore]) => ({ 
+          ...majorsData[key], 
+          key, 
+          matchScore,
+          matchPercentage: matchScore 
+        }));
+
+      // Fallback: If no matches found, return all majors with basic scores
+      if (topMajors.length === 0 || topMajors.every(m => m.matchScore === 0)) {
+        console.warn('⚠️ No matches found, returning all majors');
+        topMajors = Object.entries(majorsData)
+          .slice(0, 5)
+          .map(([key, major]) => ({
+            ...major,
+            key,
+            matchScore: major.demandLevel || 50, // Use demand level as fallback
+            matchPercentage: major.demandLevel || 50
+          }));
+      }
+
+      console.log('✅ Top majors calculated:', topMajors);
+      console.log('📊 Scores:', scores);
 
       // Simulate processing time for better UX
       await new Promise(resolve => setTimeout(resolve, 1500));
 
-      // Call AI analyzer
-      const results = analyzeStudent(assessmentData);
+      const results = {
+        recommendations: topMajors,
+        assessmentData: {
+          interests: selectedInterests,
+          skills: selectedSkills,
+          studyPreferences: selectedPreferences
+        },
+        timestamp: new Date().toISOString()
+      };
+
+      console.log('🚀 Sending results to parent:', results);
 
       // Save to localStorage
       try {
-        localStorage.setItem('tawjeeh-assessment', JSON.stringify(assessmentData));
+        localStorage.setItem('tawjeeh-assessment', JSON.stringify(results.assessmentData));
         localStorage.setItem('tawjeeh-results', JSON.stringify(results));
       } catch (e) {
         console.error('Error saving to localStorage:', e);
@@ -196,9 +208,9 @@ export default function AssessmentPage({ onFinish, onProgressUpdate }) {
               <div className="inline-block p-4 bg-purple-500/20 rounded-full mb-4">
                 <Sparkles className="w-12 h-12 text-yellow-400" />
               </div>
-              <h2 className="text-3xl font-bold mb-3">اختر مهاراتك 💪</h2>
+              <h2 className="text-3xl font-bold mb-3">اختر اهتماماتك 🎯</h2>
               <p className="text-purple-200 text-lg">
-                حدد المهارات التي تمتلكها أو تشعر بالراحة عند استخدامها
+                ما هي المجالات التي تثير اهتمامك وفضولك؟
               </p>
               <div className="mt-3 text-sm text-purple-300">
                 اخترت: <span className="font-bold text-yellow-400">{selectedInterests.length}</span> من الاهتمامات
@@ -207,7 +219,7 @@ export default function AssessmentPage({ onFinish, onProgressUpdate }) {
 
             <div className="card-glass rounded-3xl p-8 max-w-4xl mx-auto">
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                {interestsOptions.map(option => (
+                {interestsData.map(option => (
                   <button
                     key={option.id}
                     onClick={() => toggleSelection(option.id, selectedInterests, setSelectedInterests, 8)}
@@ -218,7 +230,7 @@ export default function AssessmentPage({ onFinish, onProgressUpdate }) {
                     }`}
                   >
                     <div className="text-3xl mb-2">{option.icon}</div>
-                    <div className="font-semibold text-sm">{option.label}</div>
+                    <div className="font-semibold text-sm">{option.name}</div>
                     {selectedInterests.includes(option.id) && (
                       <CheckCircle2 className="w-5 h-5 mt-2 mx-auto" />
                     )}
@@ -236,9 +248,9 @@ export default function AssessmentPage({ onFinish, onProgressUpdate }) {
               <div className="inline-block p-4 bg-blue-500/20 rounded-full mb-4">
                 <Sparkles className="w-12 h-12 text-blue-400" />
               </div>
-              <h2 className="text-3xl font-bold mb-3">اختر اهتماماتك 🎯</h2>
+              <h2 className="text-3xl font-bold mb-3">اختر مهاراتك 💪</h2>
               <p className="text-purple-200 text-lg">
-                ما هي المجالات التي تثير اهتمامك وفضولك؟
+                حدد المهارات التي تمتلكها أو تشعر بالراحة عند استخدامها
               </p>
               <div className="mt-3 text-sm text-purple-300">
                 اخترت: <span className="font-bold text-blue-400">{selectedSkills.length}</span> من المهارات
@@ -247,7 +259,7 @@ export default function AssessmentPage({ onFinish, onProgressUpdate }) {
 
             <div className="card-glass rounded-3xl p-8 max-w-4xl mx-auto">
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                {skillsOptions.map(option => (
+                {skillsData.map(option => (
                   <button
                     key={option.id}
                     onClick={() => toggleSelection(option.id, selectedSkills, setSelectedSkills, 8)}
@@ -258,7 +270,7 @@ export default function AssessmentPage({ onFinish, onProgressUpdate }) {
                     }`}
                   >
                     <div className="text-3xl mb-2">{option.icon}</div>
-                    <div className="font-semibold text-sm">{option.label}</div>
+                    <div className="font-semibold text-sm">{option.name}</div>
                     {selectedSkills.includes(option.id) && (
                       <CheckCircle2 className="w-5 h-5 mt-2 mx-auto" />
                     )}
@@ -287,7 +299,7 @@ export default function AssessmentPage({ onFinish, onProgressUpdate }) {
 
             <div className="card-glass rounded-3xl p-8 max-w-4xl mx-auto mb-8">
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                {preferencesOptions.map(option => (
+                {studyTypesData.map(option => (
                   <button
                     key={option.id}
                     onClick={() => toggleSelection(option.id, selectedPreferences, setSelectedPreferences, 6)}
@@ -298,7 +310,7 @@ export default function AssessmentPage({ onFinish, onProgressUpdate }) {
                     }`}
                   >
                     <div className="text-3xl mb-2">{option.icon}</div>
-                    <div className="font-semibold text-sm">{option.label}</div>
+                    <div className="font-semibold text-sm">{option.name}</div>
                     {selectedPreferences.includes(option.id) && (
                       <CheckCircle2 className="w-5 h-5 mt-2 mx-auto" />
                     )}
