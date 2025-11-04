@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { skillsData, interestsData, studyTypesData, majorsData } from '../data/majorsData'
+import { analyzeStudent } from "../utils/aiAdvisor";
 
 export default function AssessmentPage({ onFinish }) {
   const [skills, setSkills] = useState([])
