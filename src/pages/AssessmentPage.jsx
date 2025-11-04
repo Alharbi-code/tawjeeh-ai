@@ -52,6 +52,12 @@ export default function AssessmentPage({ onFinish }) {
       {children}
     </button>
   )
+  const handleAiAnalysis = () => {
+  const result = analyzeStudent(interests, studyPrefs);
+  console.log("AI result:", result);
+  alert(`التخصص المقترح لك هو: ${result.recommended}`);
+};
+
 
   return (
     <div className="min-h-screen p-6 flex flex-col items-center">
@@ -100,7 +106,7 @@ export default function AssessmentPage({ onFinish }) {
       </div>
 
       <button
-        onClick={calcMatch}
+        onClick={handleAiAnalysis}
         className="bg-green-400 text-black font-bold py-3 px-6 rounded-lg hover:scale-105 transition"
       >
         عرض النتائج
