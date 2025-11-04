@@ -125,7 +125,7 @@ export default function AssessmentPage({ onFinish, onProgressUpdate }) {
       // Get top 5 majors
       let topMajors = Object.entries(scores)
         .sort((a, b) => b[1] - a[1])
-        .slice(0, 5)
+        .slice(0, 21)
         .map(([key, matchScore]) => ({ 
           ...majorsData[key], 
           key, 
@@ -137,7 +137,7 @@ export default function AssessmentPage({ onFinish, onProgressUpdate }) {
       if (topMajors.length === 0 || topMajors.every(m => m.matchScore === 0)) {
         console.warn('⚠️ No matches found, returning all majors');
         topMajors = Object.entries(majorsData)
-          .slice(0, 5)
+          .slice(0, 21)
           .map(([key, major]) => ({
             ...major,
             key,
