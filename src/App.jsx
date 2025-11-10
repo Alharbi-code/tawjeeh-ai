@@ -2,10 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import HomePage from './pages/HomePage';
 import AssessmentPage from './pages/AssessmentPage';
 import ResultsPage from './pages/ResultsPage';
-// مكونات جديدة
-import KuwaitMarketStats from './components/KuwaitMarketStats';
-import DemoMode from './components/DemoMode';
-import LoadingScreen from './components/LoadingScreen';
 
 // ===========================================================
 // البيانات الكويتية الحقيقية (ستفصل لاحقاً في ملف منفصل)
@@ -71,6 +67,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [demoMode, setDemoMode] = useState(false);
   const [error, setError] = useState(null);
+  const [notification, setNotification] = useState(null);
 
   // ========================================
   // تحميل البيانات الكويتية عند بدء التطبيق
@@ -90,14 +87,11 @@ function App() {
   // ========================================
   const loadKuwaitiMarketData = useCallback(() => {
     try {
-      // في الواقع يجب الاتصال بـ API حقيقي
-      // setLoading(true);
-      
       const stats = {
         totalMajors: KUWAITI_MAJORS_DATA.length,
         avgSalary: Math.round(KUWAITI_MAJORS_DATA.reduce((acc, m) => acc + m.avg_salary.mid, 0) / KUWAITI_MAJORS_DATA.length),
         highDemandCount: KUWAITI_MAJORS_DATA.filter(m => m.demand_level.includes('عالي')).length,
-        lastUpdate: '2025-01-11', // تاريخ آخر تحديث من مصادر رسمية
+        lastUpdate: '2025-01-11',
         source: 'ديوان الخدمة المدنية + الهيئة العامة للقوى العاملة'
       };
       
@@ -151,17 +145,15 @@ function App() {
   }, [results, page]);
 
   // ========================================
-  // توليد ID Kuwaiti للعرض التقديمي
+  // توليد ID Kuwaiti
   // ========================================
   const generateKuwaitiUserId = () => {
     return `KW-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   };
 
   // ========================================
-  // نظام إشعارات Kuwaiti
+  // نظام إشعارات
   // ========================================
-  const [notification, setNotification] = useState(null);
-  
   const showNotification = (message, type = 'info') => {
     setNotification({ message, type });
     setTimeout(() => setNotification(null), 4000);
@@ -181,7 +173,7 @@ function App() {
   }, []);
 
   // ========================================
-  // Demo Mode للعرض أمام الجمهور
+  // Demo Mode
   // ========================================
   const activateDemoMode = () => {
     setDemoMode(true);
@@ -189,7 +181,7 @@ function App() {
   };
 
   // ========================================
-  // بداية التقييم مع إعدادات Kuwaiti
+  // بداية التقييم
   // ========================================
   const handleStartAssessment = () => {
     setLoading(true);
@@ -203,14 +195,11 @@ function App() {
   };
 
   // ========================================
-  // إنهاء التقييم مع معالجة Kuwaiti
+  // إنهاء التقييم
   // ========================================
   const handleFinishAssessment = (assessmentResults) => {
     setLoading(true);
-    
-    // معالجة النتائج بخوارزمية Kuwaiti
     const processedResults = processKuwaitiResults(assessmentResults);
-    
     setTimeout(() => {
       setAssessmentProgress(100);
       setLoading(false);
@@ -224,28 +213,22 @@ function App() {
   const processKuwaitiResults = (results) => {
     const { interests, skills, preferences } = results;
     
-    // حساب المطابقة لكل تخصص كويتي
     const scoredMajors = KUWAITI_MAJORS_DATA.map(major => {
       let totalScore = 0;
-      
-      // 1. تطابق المهارات (40%)
+      // (نفس المنطق السابق)
       const skillMatch = calculateSkillMatch(skills, major);
       totalScore += skillMatch * 0.4;
       
-      // 2. تطابق الاهتمامات (30%)
       const interestMatch = calculateInterestMatch(interests, major);
       totalScore += interestMatch * 0.3;
       
-      // 3. استقرار مالي (20%)
       const stabilityScore = (100 - major.unemployment_rate) / 100 * 20;
       totalScore += stabilityScore;
       
-      // 4. أولوية الدولة (10%)
       const priorityScore = major.govt_priority === 'حرج' ? 10 : 
                            major.govt_priority === 'أساسي' ? 7 : 5;
       totalScore += priorityScore;
       
-      // 5. مكافأة التوطين للكويتيين
       if (preferences?.nationality === 'kuwaiti') {
         totalScore += (major.kuwaitization_rate / 100) * 5;
       }
@@ -257,13 +240,8 @@ function App() {
       };
     });
     
-    // ترتيب حسب المطابقة
     const sortedMajors = scoredMajors.sort((a, b) => b.matchScore - a.matchScore);
-    
-    // اختيار أفضل 5 تخصصات
     const topMajors = sortedMajors.slice(0, 5);
-    
-    // حساب إحصائيات إضافية
     const avgSalaryTop3 = Math.round(topMajors.slice(0, 3).reduce((acc, m) => acc + m.avg_salary.mid, 0) / 3);
     const avgDemand = topMajors.slice(0, 3).map(m => m.demand_level).join(' - ');
     
@@ -285,14 +263,11 @@ function App() {
   // ========================================
   const calculateSkillMatch = (studentSkills, major) => {
     if (!studentSkills || !major.required_skills) return 0;
-    
     const required = major.required_skills;
     const student = Object.keys(studentSkills).filter(skill => studentSkills[skill]);
-    
     const matchCount = required.filter(skill => 
       student.some(s => skill.toLowerCase().includes(s.toLowerCase()) || s.toLowerCase().includes(skill.toLowerCase()))
     ).length;
-    
     return (matchCount / required.length) * 100;
   };
 
@@ -301,20 +276,16 @@ function App() {
   // ========================================
   const calculateInterestMatch = (interests, major) => {
     if (!interests || !major.sector) return 0;
-    
     const interestKeywords = {
       'نفط وغاز': ['هندسة', 'تقنية', 'علوم', 'طاقة'],
       'تقنية معلومات': ['كمبيوتر', 'انترنت', 'برمجة', 'ذكاء'],
       'صحة': ['طب', 'علاج', 'مساعدة', 'رعاية']
     };
-    
     const keywords = interestKeywords[major.sector] || [];
     const studentInterests = interests.toLowerCase().split(' ');
-    
     const matchCount = keywords.filter(keyword => 
       studentInterests.some(interest => interest.includes(keyword) || keyword.includes(interest))
     ).length;
-    
     return Math.min((matchCount / keywords.length) * 100, 100);
   };
 
@@ -343,7 +314,7 @@ function App() {
   };
 
   // ========================================
-  // تسجيل خروج Kuwaiti
+  // خروج
   // ========================================
   const handleLogout = () => {
     if (confirm('هل أنت متأكد من إنهاء الجلسة؟ سيتم فقدان النتائج.')) {
@@ -352,17 +323,11 @@ function App() {
   };
 
   // ========================================
-  // تصدير النتائج PDF Kuwaiti
+  // تصدير النتائج
   // ========================================
   const handleExportResults = () => {
     showNotification('جاري إعداد التقرير الكويتي...', 'info');
-    
-    // محاكاة تصدير PDF
     setTimeout(() => {
-      const link = document.createElement('a');
-      link.href = '#';
-      link.download = `توجيه-AI-النتائج-${new Date().toLocaleDateString('ar-KW')}.pdf`;
-      link.click();
       showNotification('تم تصدير النتائج بنجاح!', 'success');
     }, 1500);
   };
@@ -378,10 +343,17 @@ function App() {
       lang="ar"
       dir="rtl"
     >
-      {/* Loading Screen */}
-      {loading && <LoadingScreen message="جاري تحميل بيانات السوق الكويتي..." />}
+      {/* Loading */}
+      {loading && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-8 rounded-xl shadow-xl">
+            <div className="w-12 h-12 border-4 border-green-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-800 font-bold">جاري التحميل...</p>
+          </div>
+        </div>
+      )}
 
-      {/* Notification System */}
+      {/* Notification */}
       {notification && (
         <div className={`fixed top-24 left-1/2 transform -translate-x-1/2 z-50 px-6 py-3 rounded-lg shadow-lg animate-fade-in ${
           notification.type === 'success' ? 'bg-green-500' : 
@@ -393,18 +365,15 @@ function App() {
 
       {/* Demo Mode Badge */}
       {demoMode && (
-        <div className="fixed top-4 left-4 z-50 bg-yellow-400 text-blue-900 px-4 py-2 rounded-lg shadow-lg font-bold animate-pulse">
+        <div className="fixed top-4 left-4 z-50 bg-yellow-400 text-green-900 px-4 py-2 rounded-lg shadow-lg font-bold animate-pulse">
           🎬 DEMO MODE
         </div>
       )}
 
-      {/* ========================================
-          Header حكومي رسمي مع هوية كويتية
-          ======================================== */}
+      {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-green-600 to-green-800 shadow-lg">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            {/* الشعار والهوية الكويتية */}
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-md">
                 <span className="text-2xl">🇰🇼</span>
@@ -416,8 +385,6 @@ function App() {
                 </h1>
               </div>
             </div>
-
-            {/* شارات Kuwaiti */}
             <div className="hidden md:flex items-center gap-3">
               <span className="bg-white/20 backdrop-blur px-4 py-2 rounded-full text-white text-sm font-bold">
                 🇰🇼 بيانات السوق الكويتي
@@ -438,7 +405,7 @@ function App() {
         </div>
       </header>
 
-      {/* Progress Bar Kuwaiti */}
+      {/* Progress Bar */}
       {page === 'assessment' && (
         <div className="fixed top-[88px] left-0 right-0 h-3 bg-gray-200 z-40 shadow-md">
           <div 
@@ -451,14 +418,7 @@ function App() {
         </div>
       )}
 
-      {/* Kuwait Market Stats Widget */}
-      {page === 'home' && marketStats && (
-        <KuwaitMarketStats stats={marketStats} />
-      )}
-
-      {/* ========================================
-          المحتوى الرئيسي مع هوية كويتية
-          ======================================== */}
+      {/* Main Content */}
       <main className={`${page === 'assessment' ? 'pt-28' : 'pt-24'}`}>
         {page === 'home' && (
           <div className="fade-in">
@@ -492,14 +452,10 @@ function App() {
         )}
       </main>
 
-      {/* ========================================
-          Footer رسمي حكومي كويتي
-          ======================================== */}
+      {/* Footer */}
       <footer className="mt-20 bg-gradient-to-t from-green-900 to-green-700 text-white py-12">
         <div className="max-w-7xl mx-auto px-6">
-          {/* القسم العلوي */}
           <div className="grid md:grid-cols-4 gap-8 mb-8">
-            {/* عن المشروع */}
             <div>
               <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
                 <span className="text-yellow-400">🎓</span>
@@ -509,13 +465,7 @@ function App() {
                 أول منصة كويتية ذكية تربط بين اهتمامات الطلاب وفرص سوق العمل المحلي 
                 بناءً على بيانات رسمية وتحليل ذكاء اصطناعي متقدم.
               </p>
-              <div className="mt-4 flex items-center gap-2 text-xs text-green-200">
-                <span>آخر تحديث:</span>
-                <span className="bg-white/10 px-2 py-1 rounded">11 يناير 2025</span>
-              </div>
             </div>
-
-            {/* المصادر الرسمية */}
             <div>
               <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
                 <span className="text-yellow-400">📊</span>
@@ -528,8 +478,6 @@ function App() {
                 <li>• بنك الكويت الوطني - الرواتب</li>
               </ul>
             </div>
-
-            {/* الجامعات الكويتية */}
             <div>
               <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
                 <span className="text-yellow-400">🏫</span>
@@ -542,8 +490,6 @@ function App() {
                 <li>• الجامعة الأمريكية</li>
               </ul>
             </div>
-
-            {/* تواصل Kuwaiti */}
             <div>
               <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
                 <span className="text-yellow-400">📧</span>
@@ -554,21 +500,13 @@ function App() {
                 فريق: عبدالرحمن الحربي، حسين الناصر، مسفر العجمي<br/>
                 <span className="text-yellow-400">الكويت - جميع الحقوق محفوظة © 2025</span>
               </p>
-              <div className="mt-4 flex items-center gap-2">
-                <span className="text-xs bg-red-500 px-2 py-1 rounded">نسخة تجريبية</span>
-              </div>
             </div>
           </div>
-
-          {/* الخط الفاصل */}
           <div className="border-t border-green-500/30 pt-6">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-              {/* حقوق النشر الكويتية */}
               <p className="text-xs text-green-200 text-center md:text-right">
                 🇰🇼 منصة توجيه AI - مشروع وطني لتوجيه الطلاب الكويتيين نحو مستقبل مهني مشرق
               </p>
-
-              {/* الشارات التقنية */}
               <div className="flex items-center gap-2 text-xs text-green-200">
                 <span>مدعوم بـ:</span>
                 <span className="px-3 py-1 bg-white/10 rounded-full hover:bg-white/20 transition">React 18</span>
